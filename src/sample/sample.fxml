@@ -19,23 +19,23 @@
       </HBox>
       <HBox prefHeight="30.0">
          <children>
-            <TextField prefHeight="30.0" promptText="Scieżka do pliku" HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" prefHeight="30.0" text="Wybierz.." />
+            <TextField fx:id="filePath" prefHeight="30.0" promptText="Scieżka do pliku" HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" onAction="#openFile" prefHeight="30.0" text="Wybierz.." />
          </children>
       </HBox>
-      <HBox prefHeight="30.0">
+      <HBox fx:id="passw" prefHeight="30.0">
          <children>
             <Label text="Hasło: " HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets top="5.0" />
                </HBox.margin>
             </Label>
-            <PasswordField prefHeight="30.0" promptText="Hasło" HBox.hgrow="ALWAYS" />
+            <PasswordField fx:id="passwd" prefHeight="30.0" promptText="Hasło" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
       <HBox prefHeight="30.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="30.0" text="Zaszyfruj" />
+            <Button mnemonicParsing="false" onAction="#encrypt" prefHeight="30.0" text="Zaszyfruj" />
             <Region HBox.hgrow="ALWAYS" />
             <Button mnemonicParsing="false" prefHeight="30.0" text="Odszyfruj" />
          </children>
