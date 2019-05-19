@@ -49,7 +49,7 @@ public class Controller {
         Window theStage = source.getScene().getWindow();
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
+        fileChooser.setTitle("Open File");
         File file = fileChooser.showOpenDialog(theStage);
         fileOpened = file;
         filePath.setText(file.getPath());
