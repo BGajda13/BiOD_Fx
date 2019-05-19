@@ -16,10 +16,21 @@
             <Region HBox.hgrow="ALWAYS" />
             <Button mnemonicParsing="false" onAction="#showHelp" text="Pomoc" />
          </children>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
       </HBox>
       <HBox prefHeight="30.0">
          <children>
-            <TextField fx:id="filePath" prefHeight="30.0" promptText="Scieżka do pliku" HBox.hgrow="ALWAYS" />
+            <Label text="Plik wejściowy: ">
+               <HBox.margin>
+                  <Insets right="1.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="filePath" prefHeight="30.0" promptText="Scieżka do pliku" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin></TextField>
             <Button mnemonicParsing="false" onAction="#openFile" prefHeight="30.0" text="Wybierz.." />
          </children>
       </HBox>
@@ -27,18 +38,31 @@
          <children>
             <Label text="Hasło: " HBox.hgrow="ALWAYS">
                <HBox.margin>
-                  <Insets top="5.0" />
+                  <Insets left="41.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Label>
-            <PasswordField fx:id="passwd" prefHeight="30.0" promptText="Hasło" HBox.hgrow="ALWAYS" />
+            <PasswordField fx:id="passwd" prefHeight="30.0" promptText="Hasło" HBox.hgrow="NEVER" />
+         </children>
+      </HBox>
+      <HBox prefHeight="30.0">
+         <children>
+            <Label text="Plik wynikowy:">
+               <HBox.margin>
+                  <Insets right="5.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="fileOutput" prefHeight="30.0" prefWidth="433.0" promptText="Scieżka do pliku" HBox.hgrow="NEVER" />
          </children>
       </HBox>
       <HBox prefHeight="30.0">
          <children>
             <Button mnemonicParsing="false" onAction="#encrypt" prefHeight="30.0" text="Zaszyfruj" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" prefHeight="30.0" text="Odszyfruj" />
+            <Button mnemonicParsing="false" onAction="#decrypt" prefHeight="30.0" text="Odszyfruj" />
          </children>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
       </HBox>
    </children>
    <padding>

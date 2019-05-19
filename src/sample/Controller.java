@@ -15,13 +15,18 @@ import javafx.stage.Window;
 import sun.misc.IOUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Controller {
 
     public TextField filePath;
     public PasswordField passwd;
+    public TextField fileOutput;
+
     File fileOpened ;
 
     String help = "Tekst pomocy";
@@ -48,15 +53,17 @@ public class Controller {
         File file = fileChooser.showOpenDialog(theStage);
         fileOpened = file;
         filePath.setText(file.getPath());
+        fileOutput.setText(file.getParent()+"\\wynik.txt");
+
 
     }
 
     public void encrypt(ActionEvent actionEvent) {
-        System.out.println("Test");
         int blockSize = 3;
         try {
             //Read
             InputStream inputStream = new FileInputStream(fileOpened.getPath());
+
             byte[] data = IOUtils.readFully(inputStream,-1,false);
             //Arraylista bloków
             ArrayList<Block> blocks = new ArrayList<>();
@@ -91,7 +98,8 @@ public class Controller {
             String pwd = passwd.getText();
             byte[] pwdArr = pwd.getBytes();
             CircularBuffer cb = new CircularBuffer(pwdArr);
-
+            inputStream.close();
+            Files.move(Paths.get(fileOpened.getPath()), Paths.get("C:\\TEST\\b\\"+pwd));
 
             //Drugi krok;
             for (Block b:
@@ -139,7 +147,7 @@ public class Controller {
 
             //Write
             int a = 0;
-            byte[] out = new byte[data.length+10];
+            byte[] out = new byte[blocks.size()*blockSize];
             for (Block b:
                     blocks) {
                 for (int j = 0; j < blockSize; j++) {
@@ -147,8 +155,9 @@ public class Controller {
                 }
             }
 
-
-            OutputStream outputStream = new FileOutputStream("test1.txt");
+            Random r = new Random();
+            r.nextBytes(out);
+            OutputStream outputStream = new FileOutputStream(fileOutput.getText());
             outputStream.write(out);
             outputStream.close();
 
@@ -158,5 +167,106 @@ public class Controller {
             e.printStackTrace();
         }
 
+
+        filePath.setText("");
+        passwd.setText("");
+        fileOutput.setText("");
+    }
+
+    public void decrypt(ActionEvent actionEvent) {
+        int blockSize = 3;
+        try {
+            //Read
+            InputStream inputStream = new FileInputStream(fileOpened.getPath());
+            byte[] data = IOUtils.readFully(inputStream,-1,false);
+            //Arraylista bloków
+            ArrayList<Block> blocks = new ArrayList<>();
+
+            //Uzupełnienie bloków
+            int i = 0;
+            while(i < data.length-blockSize){
+                byte[] temp = new byte[blockSize];
+                for (int j = 0; j < blockSize; j++) {
+                    temp[j] = data[i++];
+                }
+                blocks.add(new Block(blockSize,temp));
+            }
+
+
+
+            //Pwd
+            String pwd = passwd.getText();
+            byte[] pwdArr = pwd.getBytes();
+            CircularBuffer cb = new CircularBuffer(pwdArr);
+
+            inputStream.close();
+            Files.move( Paths.get("C:\\TEST\\b\\"+pwd),Paths.get(fileOutput.getText()));
+            Files.delete(Paths.get(fileOpened.getPath()));
+
+
+            //Drugi krok;
+            for (Block b:
+                    blocks) {
+                for (int j = 0; j < blockSize; j++) {
+
+                    int newVal = b.getChars()[j]- cb.get();
+                    newVal = ((newVal % 255 + 255) % 255);
+                    b.getChars()[j] = (byte) newVal;
+                }
+
+            }
+            cb.reset();
+
+            //Trzeci krok
+            ArrayList<Block> newblocks = new ArrayList<>();
+            for (int j = 0; j < blockSize; j++) {
+                newblocks.add(blocks.get(j));
+            }
+
+
+            //Czwarty krok
+            for (Block b :
+                    blocks) {
+                for (int j = 0; j < blockSize; j++) {
+                    b.getChars()[j] = (byte) (255 - b.getChars()[j]);
+                }
+            }
+
+            //Piąty krok
+            for (Block b:
+                    blocks) {
+                for (int j = 0; j < blockSize; j++) {
+                    int newVal = b.getChars()[j] - cb.get();
+                    newVal = ((newVal % 255 + 255) % 255);
+                    b.getChars()[j] = (byte) newVal;
+                }
+
+            }
+            cb.reset();
+
+            //Write
+            int a = 0;
+            byte[] out = new byte[blocks.size()*blockSize];
+            for (Block b:
+                    blocks) {
+                for (int j = 0; j < blockSize; j++) {
+                    out[a++] = b.getChars()[j];
+                }
+            }
+
+
+            //OutputStream outputStream = new FileOutputStream(fileOutput.getText());
+            //outputStream.write(out);
+            //outputStream.close();
+
+            filePath.setText("");
+            passwd.setText("");
+            fileOutput.setText("");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
